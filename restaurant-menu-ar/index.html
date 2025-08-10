@@ -1,0 +1,51 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+</head>
+
+<body>
+    <a-scene mindar-image="imageTargetSrc: ./imageTargets.mind; maxTrack: 4" color-space="sRGB"
+        renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false">
+        <a-assets>
+            <!-- Models -->
+            <a-asset-item id="model1" src="./models/burger.glb"></a-asset-item>
+            <a-asset-item id="model2" src="./models/fries.glb"></a-asset-item>
+            <a-asset-item id="model3" src="./models/chicken_nugget.glb"></a-asset-item>
+            <a-asset-item id="model4" src="./models/cocktail.glb"></a-asset-item>
+        </a-assets>
+
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+        <!-- Target 1 -->
+        <a-entity mindar-image-target="targetIndex: 0">
+            <a-gltf-model src="#model1" position="0 -0.25 0" scale="0.05 0.05 0.05" rotation="0 0 0"
+                animation-mixer></a-gltf-model>
+        </a-entity>
+
+        <!-- Target 2 -->
+        <a-entity mindar-image-target="targetIndex: 1">
+            <a-gltf-model src="#model2" position="0 -0.25 0" scale="0.05 0.05 0.05" rotation="0 0 0"
+                animation-mixer></a-gltf-model>
+        </a-entity>
+
+        <!-- Target 3 -->
+        <a-entity mindar-image-target="targetIndex: 2">
+            <a-gltf-model src="#model3" position="0 -0.25 0" scale="0.05 0.05 0.05" rotation="0 0 0"
+                animation-mixer></a-gltf-model>
+        </a-entity>
+
+        <!-- Target 4 -->
+        <a-entity mindar-image-target="targetIndex: 3">
+            <a-gltf-model src="#model4" position="0 -0.25 0" scale="0.05 0.05 0.05" rotation="0 0 0"
+                animation-mixer></a-gltf-model>
+        </a-entity>
+
+    </a-scene>
+</body>
+
+</html>
