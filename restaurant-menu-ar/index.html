@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <a-scene mindar-image="imageTargetSrc: ./menutarget.mind; filterMinCF:0.1; filterBeta: 10" color-space="sRGB"
+    <a-scene mindar-image="imageTargetSrc: ./menutarget.mind; filterMinCF:0.1; filterBeta: 0.5" color-space="sRGB"
         renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false">
 
@@ -27,43 +27,38 @@
             <img id="4StarLeft" src="./images/4StarsLeft.png">
         </a-assets>
 
-        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-camera mindar-camera cursor="rayOrigin: mouse" raycaster="objects: .clickable; far: 10; interval: 100">
+        </a-camera>
 
-        <!-- Target -->
+
+        <!-- Target Root -->
         <a-entity id="targetRoot" mindar-image-target="targetIndex: 0">
-            <!-- Occluder -->
-            <a-plane id="occluder" position="0 0 0" width="1" height="1.5" material="color: #FFF; shader: flat;"
-                depth-occluder></a-plane>
 
-            <!-- Krabby Patty -->
+            <!-- Food Items + Stars -->
             <a-gltf-model id="food1" src="#model1" position="-0.63 0.25 -0.05" scale="0.03 0.03 0.03"
                 visible="false"></a-gltf-model>
             <a-image id="star1" class="clickable" src="#5StarLeft" position="-0.3 0.2 -0.05"
                 scale="0.25 0.05 1"></a-image>
 
-            <!-- Kelp Fries -->
             <a-gltf-model id="food2" src="#model2" position="-0.63 0 -0.05" scale="0.05 0.05 0.05"
                 visible="false"></a-gltf-model>
             <a-image id="star2" class="clickable" src="#4StarLeft" position="-0.3 -0.03 -0.05"
                 scale="0.25 0.05 1"></a-image>
 
-            <!-- Coral Bits -->
             <a-gltf-model id="food3" src="#model3" position="0.63 -0.35 -0.05" scale="0.5 0.5 0.5"
                 visible="false"></a-gltf-model>
             <a-image id="star3" class="clickable" src="#4StarRight" position="0.3 -0.4 -0.05"
                 scale="0.25 0.05 1"></a-image>
 
-            <!-- Seafoam Soda -->
             <a-gltf-model id="food4" src="#model4" position="0.63 -0.58 -0.05" scale="0.3 0.3 0.3"
                 visible="false"></a-gltf-model>
             <a-image id="star4" class="clickable" src="#5StarRight" position="0.3 -0.63 -0.05"
                 scale="0.25 0.05 1"></a-image>
 
-            <!-- Review Panel (hidden at start) -->
-            <a-entity id="reviewPanel" position="1 0 0" visible="false" billboard>
-                <a-plane color="#fff" width="0.8" height="1" opacity="0.9"></a-plane>
-                <a-entity id="scrollContainer" touch-scroll="minY:-0.5; maxY:0.5">
-                    <!-- Example review card -->
+            <!-- Review Panel -->
+            <a-entity id="reviewPanel" position="0 0 0.5" visible="true">
+                <a-plane color="#fff" width="0.2" height="0.2" opacity="0.9"></a-plane>
+                <a-entity id="scrollContainer">
                     <a-plane position="0 0.35 0.01" width="0.75" height="0.25" color="#eee">
                         <a-text value="John Doe - ★★★★☆" align="center" position="0 0.07 0.01" color="#000"
                             width="0.7"></a-text>
@@ -76,11 +71,10 @@
                         <a-text value="Best fries ever!" align="center" position="0 -0.05 0.01" color="#333"
                             width="0.7"></a-text>
                     </a-plane>
-                    <!-- Add more review cards as needed -->
                 </a-entity>
             </a-entity>
-        </a-entity>
 
+        </a-entity>
     </a-scene>
 </body>
 
