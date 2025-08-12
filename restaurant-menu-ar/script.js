@@ -39,24 +39,37 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!target) { console.warn('MindAR target not found!'); return; }
 
   const reviewData = {
-    food1: [
-      { avatar: "./images/profile1.png", name: "Spongebob", stars: 5, comment: "The best Krabby Patty I’ve ever made!" },
-      { avatar: "./images/profile2.png", name: "Patrick", stars: 4, comment: "Tastes like happiness… and maybe jellyfish jelly." },
-      { avatar: "./images/profile3.png", name: "Squidward", stars: 2, comment: "Too cheerful for my taste." }
-    ],
-    food2: [
-      { avatar: "./images/profile3.png", name: "Squidward", stars: 3, comment: "I guess it’s edible." },
-      { avatar: "./images/profile1.png", name: "Spongebob", stars: 5, comment: "Bubble Bass could never complain about this one." }
-    ],
-    food3: [
-      { avatar: "./images/profile2.png", name: "Patrick", stars: 5, comment: "I ate it in one bite… was I supposed to chew?" },
-      { avatar: "./images/profile1.png", name: "Spongebob", stars: 4, comment: "Could use more sea salt, but still great!" }
-    ],
-    food4: [
-      { avatar: "./images/profile3.png", name: "Squidward", stars: 1, comment: "Why am I here?" },
-      { avatar: "./images/profile2.png", name: "Patrick", stars: 5, comment: "Best chum I’ve ever had!" }
-    ]
+    food1: {
+      title: "Krabby Patty",
+      reviews: [
+        { avatar: "./images/profile1.png", name: "Spongebob", stars: 5, comment: "The best Krabby Patty I’ve ever made!" },
+        { avatar: "./images/profile2.png", name: "Patrick", stars: 4, comment: "Tastes like happiness… and maybe jellyfish jelly." },
+        { avatar: "./images/profile3.png", name: "Squidward", stars: 2, comment: "Too cheerful for my taste." }
+      ]
+    },
+    food2: {
+      title: "Kelp Fries",
+      reviews: [
+        { avatar: "./images/profile3.png", name: "Squidward", stars: 3, comment: "I guess it’s edible." },
+        { avatar: "./images/profile1.png", name: "Spongebob", stars: 5, comment: "Bubble Bass could never complain about this one." }
+      ]
+    },
+    food3: {
+      title: "Coral Bits",
+      reviews: [
+        { avatar: "./images/profile2.png", name: "Patrick", stars: 5, comment: "I ate it in one bite… was I supposed to chew?" },
+        { avatar: "./images/profile1.png", name: "Spongebob", stars: 4, comment: "Could use more sea salt, but still great!" }
+      ]
+    },
+    food4: {
+      title: "Seafoam Soda",
+      reviews: [
+        { avatar: "./images/profile3.png", name: "Squidward", stars: 1, comment: "Why am I here?" },
+        { avatar: "./images/profile2.png", name: "Patrick", stars: 5, comment: "Best chum I’ve ever had!" }
+      ]
+    }
   };
+
 
   const items = [
     { food: "#food1", star: "#star1", starStart: "-0.3 0.2 -0.05", starEnd: "-0.63 0.2 -0.05", side: "left" },
@@ -129,8 +142,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function openReviewPanel(side, modelName) {
     closeReviewPanel();
     modelName = modelName.replace("#", ""); 
-    const reviews = reviewData[modelName] || [];
-    if (!reviews.length) return;
+    const foodData = reviewData[modelName];
+    if (!foodData || !foodData.reviews.length) return;
+
+    const { title, reviews } = foodData;
 
     const panel = document.createElement("a-entity");
     panel.setAttribute("id", "review-panel");
@@ -152,11 +167,19 @@ document.addEventListener("DOMContentLoaded", () => {
     scroll.setAttribute("position", "0 0 0.01");
     panel.appendChild(scroll);
 
+    const titleText = document.createElement("a-troika-text");
+    titleText.setAttribute("value", title);
+    titleText.setAttribute("font-size", 0.07);
+    titleText.setAttribute("color", "#ffffffff");
+    titleText.setAttribute("anchor", "center");
+    titleText.setAttribute("max-width", 1);
+    titleText.setAttribute("position", `0 0.65 0.02`);
+    scroll.appendChild(titleText);
+
     reviews.forEach((r, i) => {
-      const y = 0.5 - i * 0.35;
+      const y = 0.4 - i * 0.35;
       const card = document.createElement("a-entity");
-      
-      // Custom THREE.js rounded rect mesh
+
       const cardGeo = createRoundedRect(0.75, 0.3, 0.04);
       const cardMat = new THREE.MeshBasicMaterial({ color: 0xf9f9f9, transparent: true, opacity: 0.7 });
       const cardMesh = new THREE.Mesh(cardGeo, cardMat);
