@@ -33,39 +33,10 @@ function createRoundedRect(width, height, radius) {
   return new THREE.ShapeGeometry(shape);
 }
 
-// ---- NEW ----
-function updateGroupPosition() {
-  const group = document.querySelector('#content-group');
-  if (!group) return;
-
-  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-  const isLandscape = window.innerWidth > window.innerHeight;
-
-  let pos = '0 0 0';
-  let rot = '0 0 0';
-
-  if (isMobile) {
-    if (isLandscape) {
-      pos = '0 -0.5 0'; // tweak until it lines up
-    } else {
-      pos = '0 0 0';
-    }
-  }
-
-  group.setAttribute('position', pos);
-  group.setAttribute('rotation', rot);
-}
-// --------------
-
 document.addEventListener("DOMContentLoaded", () => {
   const scene = document.querySelector("a-scene");
   const target = scene.querySelector("[mindar-image-target]");
   if (!target) { console.warn('MindAR target not found!'); return; }
-
-  // run orientation check at start and when changed
-  updateGroupPosition();
-  window.addEventListener('resize', updateGroupPosition);
-  window.addEventListener('orientationchange', updateGroupPosition);
 
   const reviewData = {
     food1: [
@@ -185,6 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const y = 0.5 - i * 0.35;
       const card = document.createElement("a-entity");
       
+      // Custom THREE.js rounded rect mesh
       const cardGeo = createRoundedRect(0.75, 0.3, 0.04);
       const cardMat = new THREE.MeshBasicMaterial({ color: 0xf9f9f9, transparent: true, opacity: 0.7 });
       const cardMesh = new THREE.Mesh(cardGeo, cardMat);
