@@ -4,8 +4,8 @@ AFRAME.registerComponent('occluder', {
     if (mesh) {
       mesh.traverse(node => {
         if (node.isMesh) {
-          node.material.colorWrite = false;
-          node.material.depthWrite = true;
+          node.material.colorWrite = false; // Don't render color
+          node.material.depthWrite = true;  // Still write depth
         }
       });
     } else {
@@ -14,11 +14,12 @@ AFRAME.registerComponent('occluder', {
   }
 });
 
-// Rounded rectangle helper
+// Helper: create a THREE.js rounded rectangle geometry
 function createRoundedRect(width, height, radius) {
   const shape = new THREE.Shape();
   const x = -width / 2;
   const y = -height / 2;
+
   shape.moveTo(x + radius, y);
   shape.lineTo(x + width - radius, y);
   shape.quadraticCurveTo(x + width, y, x + width, y + radius);
@@ -28,19 +29,8 @@ function createRoundedRect(width, height, radius) {
   shape.quadraticCurveTo(x, y + height, x, y + height - radius);
   shape.lineTo(x, y + radius);
   shape.quadraticCurveTo(x, y, x + radius, y);
-  return new THREE.ShapeGeometry(shape);
-}
 
-// Orientation helpers
-function getOrientation() {
-  return (window.innerWidth > window.innerHeight) ? 'landscape' : 'portrait';
-}
-function adjustForOrientation(x, y) {
-  if (getOrientation() === 'landscape') {
-    // Adjust offsets for landscape
-    return { x: x * 1.2, y: y * 0.6 }; 
-  }
-  return { x, y };
+  return new THREE.ShapeGeometry(shape);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -69,10 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const items = [
-    { food: "#food1", star: "#star1", starStart: [-0.3, 0.2, -0.05], starEnd: [-0.63, 0.2, -0.05] },
-    { food: "#food2", star: "#star2", starStart: [-0.3, -0.03, -0.05], starEnd: [-0.63, -0.03, -0.05] },
-    { food: "#food3", star: "#star3", starStart: [0.3, -0.4, -0.05], starEnd: [0.63, -0.4, -0.05] },
-    { food: "#food4", star: "#star4", starStart: [0.3, -0.63, -0.05], starEnd: [0.63, -0.63, -0.05] }
+    { food: "#food1", star: "#star1", starStart: "-0.3 0.2 -0.05", starEnd: "-0.63 0.2 -0.05", side: "left" },
+    { food: "#food2", star: "#star2", starStart: "-0.3 -0.03 -0.05", starEnd: "-0.63 -0.03 -0.05", side: "left" },
+    { food: "#food3", star: "#star3", starStart: "0.3 -0.4 -0.05", starEnd: "0.63 -0.4 -0.05", side: "right" },
+    { food: "#food4", star: "#star4", starStart: "0.3 -0.63 -0.05", starEnd: "0.63 -0.63 -0.05", side: "right" }
   ];
 
   let timeouts = [], rafIds = [], activePanel = null;
@@ -95,11 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
     clearAnims();
     closeReviewPanel();
     items.forEach(({ food, star, starStart }) => {
-      const adj = adjustForOrientation(starStart[0], starStart[1]);
       const f = target.querySelector(food);
       const s = target.querySelector(star);
       if (f) { f.setAttribute("visible", false); setModelOpacity(f, 0); f.removeAttribute("animation__rotate"); }
-      if (s) s.setAttribute("position", `${adj.x} ${adj.y} ${starStart[2]}`);
+      if (s) s.setAttribute("position", starStart);
     });
   };
 
@@ -108,13 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const showFoodAndStars = (foodEl, starEl, start, end) => {
     const DURATION = 2000;
-    const adjStart = adjustForOrientation(start[0], start[1]);
-    const adjEnd = adjustForOrientation(end[0], end[1]);
-
     return Promise.all([whenLoaded(foodEl), whenLoaded(starEl)]).then(() => {
-      setModelOpacity(foodEl, 0); 
-      foodEl.setAttribute("visible", true);
-      starEl.setAttribute("position", `${adjStart.x} ${adjStart.y} ${start[2]}`);
+      setModelOpacity(foodEl, 0); foodEl.setAttribute("visible", true);
+      starEl.setAttribute("position", start);
       foodEl.setAttribute("animation__rotate", { property: "rotation", to: "0 360 0", dur: 2000, easing: "linear", loop: true });
 
       let startTime = null;
@@ -122,11 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (startTime === null) startTime = t;
         const p = Math.min((t - startTime) / DURATION, 1), e = easeInOutQuad(p);
         setModelOpacity(foodEl, e);
-        const cPos = [
-          adjStart.x + (adjEnd.x - adjStart.x) * e,
-          adjStart.y + (adjEnd.y - adjStart.y) * e,
-          start[2] + (end[2] - start[2]) * e
-        ];
+        const sPos = start.split(" ").map(Number), ePos = end.split(" ").map(Number);
+        const cPos = sPos.map((s, i) => s + (ePos[i] - s) * e);
         starEl.setAttribute("position", cPos.join(" "));
         if (p < 1) safeRaf(animate);
       };
@@ -154,8 +136,13 @@ document.addEventListener("DOMContentLoaded", () => {
     panel.setAttribute("id", "review-panel");
 
     let startX, endX;
-    if (side === "left") { startX = 0; endX = -1.2; } 
-    else { startX = 0; endX = 1.2; }
+    if (side === "left") { 
+      startX = 0; 
+      endX = -1.2; 
+    } else { 
+      startX = 0; 
+      endX = 1.2; 
+    }
 
     panel.setAttribute("position", `${startX} 0 -0.15`);
     panel.setAttribute("look-at", "[camera]");
@@ -167,20 +154,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     reviews.forEach((r, i) => {
       const y = 0.5 - i * 0.35;
-      const adj = adjustForOrientation(0, y);
-
       const card = document.createElement("a-entity");
+      
+      // Custom THREE.js rounded rect mesh
       const cardGeo = createRoundedRect(0.75, 0.3, 0.04);
       const cardMat = new THREE.MeshBasicMaterial({ color: 0xf9f9f9, transparent: true, opacity: 0.7 });
       const cardMesh = new THREE.Mesh(cardGeo, cardMat);
       card.object3D.add(cardMesh);
-      card.setAttribute("position", `0 ${adj.y} 0`);
+      card.setAttribute("position", `0 ${y} 0`);
 
       const pic = document.createElement("a-image");
       pic.setAttribute("src", r.avatar);
       pic.setAttribute("position", "-0.23 0 0.01");
       pic.setAttribute("width", "0.2");
       pic.setAttribute("height", "0.2");
+      pic.setAttribute("transparent", "true");
+      pic.setAttribute("alpha-test", "0.5");
       card.appendChild(pic);
 
       const nameText = document.createElement("a-troika-text");
@@ -256,9 +245,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const clickedEl = intersects[0].object.el;
       const item = items.find(i => i.food === `#${clickedEl.id}`);
       if (item) {
-        const isLeft = touch.clientX < window.innerWidth / 2;
-        const side = isLeft ? "left" : "right";
-        openReviewPanel(side, item.food);
+        console.log("Touched model:", clickedEl.id);
+        openReviewPanel(item.side, item.food);
       }
     }
   }
@@ -268,6 +256,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   target.addEventListener("targetFound", playSequence);
   target.addEventListener("targetLost", resetAll);
-
-  window.addEventListener("resize", resetAll); // re-calc when rotating
 });
