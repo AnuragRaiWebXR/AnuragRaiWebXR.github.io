@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
       endX = 1.2; 
     }
 
-    panel.setAttribute("position", `${startX} 0 -0.3`);
+    panel.setAttribute("position", `${startX} 0 -0.15`);
     panel.setAttribute("look-at", "[camera]");
     panel.setAttribute("material", "color: white; opacity: 0");
 
@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     panel.setAttribute("animation__slidein", {
       property: "position",
-      to: `${endX} 0 -0.3`,
+      to: `${endX} 0 -0.15`,
       dur: 1500,
       easing: "easeOutQuad"
     });

@@ -45,6 +45,11 @@
             <a-entity geometry="primitive: plane; width: 1; height: 1.5" position="0 0 0" rotation="0 0 0" occluder>
             </a-entity>
 
+            <!-- Occluder For review panel showing -->
+            <!-- since panel is at z : -1.5 so behind this one -->
+            <a-entity geometry="primitive: plane; width: 1.65; height: 1.5" position="0 0 -0.1" rotation="0 0 0"
+                occluder>
+            </a-entity>
             <!-- Food Items + Stars -->
             <a-gltf-model id="food1" class="clickable" src="#model1" position="-0.63 0.25 -0.05" scale="0.03 0.03 0.03"
                 visible="false"></a-gltf-model>
