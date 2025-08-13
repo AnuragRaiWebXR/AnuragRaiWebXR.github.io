@@ -43,21 +43,23 @@ document.addEventListener("DOMContentLoaded", () => {
       title: "Krabby Patty",
       reviews: [
         { avatar: "./images/profile1.png", name: "Spongebob", stars: 5, comment: "The best Krabby Patty I’ve ever made!" },
-        { avatar: "./images/profile2.png", name: "Patrick", stars: 4, comment: "Tastes like happiness… and maybe jellyfish jelly." },
-        { avatar: "./images/profile3.png", name: "Squidward", stars: 2, comment: "Too cheerful for my taste." }
+        { avatar: "./images/profile4.png", name: "Mr. Krabs", stars: 5, comment: "Worth every penny… especially when customers pay for it." },
+        { avatar: "./images/profile5.png", name: "Sandy", stars: 4, comment: "Tasty! But I’d add a little Texas barbecue sauce." }
       ]
     },
     food2: {
       title: "Kelp Fries",
       reviews: [
         { avatar: "./images/profile3.png", name: "Squidward", stars: 3, comment: "I guess it’s edible." },
-        { avatar: "./images/profile1.png", name: "Spongebob", stars: 5, comment: "Bubble Bass could never complain about this one." }
+        { avatar: "./images/profile2.png", name: "Patrick", stars: 5, comment: "Crunchy and salty… my two favorite things!" },
+        { avatar: "./images/profile5.png", name: "Sandy", stars: 4, comment: "Could be crispier, but still pretty good." }
       ]
     },
     food3: {
       title: "Coral Bits",
       reviews: [
         { avatar: "./images/profile2.png", name: "Patrick", stars: 5, comment: "I ate it in one bite… was I supposed to chew?" },
+        { avatar: "./images/profile4.png", name: "Mr. Krabs", stars: 3, comment: "Not bad, but I prefer something I can upsell." },
         { avatar: "./images/profile1.png", name: "Spongebob", stars: 4, comment: "Could use more sea salt, but still great!" }
       ]
     },
@@ -65,10 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
       title: "Seafoam Soda",
       reviews: [
         { avatar: "./images/profile3.png", name: "Squidward", stars: 1, comment: "Why am I here?" },
-        { avatar: "./images/profile2.png", name: "Patrick", stars: 5, comment: "Best chum I’ve ever had!" }
+        { avatar: "./images/profile5.png", name: "Sandy", stars: 5, comment: "Refreshing! Almost like a summer breeze in a glass." },
+        { avatar: "./images/profile4.png", name: "Mr. Krabs", stars: 4, comment: "A good drink, especially when sold with a meal combo." }
       ]
     }
   };
+
 
 
   const items = [
@@ -216,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const commentTxt = document.createElement("a-troika-text");
       commentTxt.setAttribute("value", r.comment);
-      commentTxt.setAttribute("font-size", 0.035);
+      commentTxt.setAttribute("font-size", 0.03);
       commentTxt.setAttribute("color", "#222");
       commentTxt.setAttribute("anchor", "left");
       commentTxt.setAttribute("max-width", 0.45);
